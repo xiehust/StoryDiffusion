@@ -83,7 +83,7 @@ async def create_item(request: APIRequest):
     for results in generators:
         for result in results:
             data = image_to_base64(result)
-            images.extend(data)
+            images.append(data)
     torch_gc()
     print('--------process_generation done')
     return APIResponse(images_base64=images)
