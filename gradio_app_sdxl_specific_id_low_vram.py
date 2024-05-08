@@ -609,7 +609,7 @@ def process_generation(_sd_type,_model_type,_upload_images, _num_steps,style_nam
     else: 
         raise NotImplementedError("You should choice between original and Photomaker!",f"But you choice {_model_type}")
     total_results = id_images + total_results
-    yield total_results
+    # yield total_results
     real_images = []
     write = False
     for ind,real_prompt in enumerate(real_prompts):
@@ -623,7 +623,7 @@ def process_generation(_sd_type,_model_type,_upload_images, _num_steps,style_nam
         else:
             raise NotImplementedError("You should choice between original and Photomaker!",f"But you choice {_model_type}")
         total_results = [real_images[-1]] + total_results
-        yield total_results
+        # yield total_results
     if _comic_type != "No typesetting (default)":
         captions= prompt_array.splitlines()
         captions = [caption.replace("[NC]","") for caption in captions]
