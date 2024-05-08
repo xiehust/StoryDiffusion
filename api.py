@@ -6,6 +6,7 @@ from pydantic import BaseModel,Field
 from typing import Literal,List, Any
 from io import BytesIO
 import base64
+from PIL import Image
 
 DEVICE = "cuda"
 DEVICE_ID = "0"
@@ -18,6 +19,22 @@ def torch_gc():
             torch.cuda.empty_cache()
             torch.cuda.ipc_collect()
 
+
+
+def base64_to_image(base64_string):
+    """
+    Converts a base64 string to a PIL.Image.Image object.
+    
+    Args:
+        base64_string (str): The base64 string representation of the image.
+        
+    Returns:
+        PIL.Image.Image: The image object.
+    """
+    image_bytes = base64.b64decode(base64_string)
+    image_buffer = BytesIO(image_bytes)
+    image = Image.open(image_buffer)
+    return image
 
 
 def image_to_base64(image):
@@ -40,7 +57,7 @@ def image_to_base64(image):
 class APIRequest(BaseModel):
     sd_type: Literal['RealVision','SDXL','Unstable'] = Field(default='SDXL')
     modeltype : Literal["Only Using Textual Description","Using Ref Images"] = Field(default="Only Using Textual Description")
-    files: Any = Field(default=None)
+    files: List[Any] = Field(default=None)
     num_steps : int = Field(default=50)
     style : Literal["Japanese Anime","(No style)","Cinematic","Disney Charactor","Photographic","Comic book","Line art"] = Field(default="Comic book")
     Ip_Adapter_Strength : float = Field(default=0.5, descrition="The strength of the IP adapter. The value ranges from 0 to 1. The larger the value, the stronger the IP adapter.")
@@ -78,7 +95,12 @@ async def create_item(request: APIRequest):
     log = f"[ {time} ] - [Request]:{json_post_raw}"
     print(log)
     
-    generators = process_generation(request.sd_type,request.modeltype,request.files,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
+    images = None
+    if isinstance(request.files,list):
+        images = [ base64_to_image(file) for file in request.files]
+        request.modeltype = "Using Ref Images"
+    
+    generators = process_generation(request.sd_type,request.modeltype,images,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
     images = []
     for results in generators:
         for result in results:
