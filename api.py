@@ -21,7 +21,7 @@ def torch_gc():
 
 class APIRequest(BaseModel):
     sd_type: Literal['RealVision','SDXL','Unstable'] = Field(default='SDXL')
-    model_type : Literal["Only Using Textual Description","Using Ref Images"] = Field(default="Only Using Textual Description")
+    modeltype : Literal["Only Using Textual Description","Using Ref Images"] = Field(default="Only Using Textual Description")
     files: Any = Field(default=None)
     num_steps : int = Field(default=50)
     style : Literal["Japanese Anime","(No style)","Cinematic","Disney Charactor","Photographic","Comic book","Line art"] = Field(default="Comic book")
@@ -55,9 +55,11 @@ async def create_item(request: APIRequest):
     time = now.strftime("%Y-%m-%d %H:%M:%S")
 
     log = f"[ {time} ] - [Request]:{json_post_raw}"
-    logger.info(log)
+    print(log)
     
-    images = process_generation(request.sd_type,request.model_type,request.files,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
+    images = process_generation(request.sd_type,request.modeltype,request.files,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
+    print('--------process_generation done')
+    print(images)
     torch_gc()
     return images
 
