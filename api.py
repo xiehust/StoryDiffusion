@@ -53,8 +53,8 @@ class APIRequest(BaseModel):
     general_prompt : str = Field(...,descrition="Textual Description for Character")
     negative_prompt : str =  Field(default="naked, deformed, bad anatomy, disfigured, poorly drawn face, mutation, extra limb, ugly, disgusting, poorly drawn hands, missing limb, floating limbs, disconnected limbs, blurry, watermarks, oversaturated, distorted hands, amputation")
     prompt_array: str =  Field(...,descrition="Comic Description (each line corresponds to a frame)")
-    G_height: int = Field(default=512)
-    G_width: int = Field(default=512)
+    G_height: int = Field(default=768)
+    G_width: int = Field(default=768)
     comic_type : Literal['No typesetting (default)','Four Pannel','Classic Comic Style'] = Field(default='Classic Comic Style')
     font_choice :str = Field(default='Inkfree.ttf')
     
