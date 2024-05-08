@@ -4,8 +4,8 @@ import torch
 from gradio_app_sdxl_specific_id_low_vram import process_generation
 from pydantic import BaseModel,Field
 from typing import Literal,List, Any
-import logging
-logger = logging.getLogger(__name__)
+from io import BytesIO
+import base64
 
 DEVICE = "cuda"
 DEVICE_ID = "0"
@@ -17,6 +17,24 @@ def torch_gc():
         with torch.cuda.device(CUDA_DEVICE):
             torch.cuda.empty_cache()
             torch.cuda.ipc_collect()
+
+
+
+def image_to_base64(image):
+    """
+    Converts a PIL.Image.Image object to a base64 string.
+    
+    Args:
+        image (PIL.Image.Image): The image object to be converted.
+        
+    Returns:
+        str: The base64 string representation of the image.
+    """
+    buffer = BytesIO()
+    image.save(buffer, format="PNG")  # Use format="JPEG" for JPEG images
+    image_bytes = buffer.getvalue()
+    base64_string = base64.b64encode(image_bytes).decode("utf-8")
+    return base64_string
 
 
 class APIRequest(BaseModel):
@@ -40,6 +58,9 @@ class APIRequest(BaseModel):
     comic_type : Literal['No typesetting (default)','Four Pannel','Classic Comic Style'] = Field(default='Classic Comic Style')
     font_choice :str = Field(default='Inkfree.ttf')
     
+class APIResponse(BaseModel):
+    images_base64 : List[str] = Field(..., descrition="Generated images")
+    
 app = FastAPI()
 
 @app.get("/ping")
@@ -57,11 +78,15 @@ async def create_item(request: APIRequest):
     log = f"[ {time} ] - [Request]:{json_post_raw}"
     print(log)
     
-    images = process_generation(request.sd_type,request.modeltype,request.files,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
-    print('--------process_generation done')
-    print(images)
+    generators = process_generation(request.sd_type,request.modeltype,request.files,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice)
+    images = []
+    for results in generators:
+        for result in results:
+            data = image_to_base64(result)
+            images.extend(data)
     torch_gc()
-    return images
+    print('--------process_generation done')
+    return APIResponse(images_base64=images)
 
 
 if __name__ == '__main__':
