@@ -33,7 +33,7 @@ class APIRequest(BaseModel):
     sa64_:float = Field(default=0.5)
     id_length_ : int = Field(default=2,descrition="Number of id images in total images")
     general_prompt : str = Field(...,descrition="Textual Description for Character")
-    negative_prompt : str =  Field(...,descrition="Negative_prompt")
+    negative_prompt : str =  Field(default="naked, deformed, bad anatomy, disfigured, poorly drawn face, mutation, extra limb, ugly, disgusting, poorly drawn hands, missing limb, floating limbs, disconnected limbs, blurry, watermarks, oversaturated, distorted hands, amputation")
     prompt_array: str =  Field(...,descrition="Comic Description (each line corresponds to a frame)")
     G_height: int = Field(default=512)
     G_width: int = Field(default=512)
@@ -48,7 +48,7 @@ def ping():
 
 @app.post("/invocations")
 async def create_item(request: APIRequest):
-    json_post = await request.json()
+    json_post = request.json()
     json_post_raw = json.dumps(json_post)
 
     now = datetime.datetime.now()
