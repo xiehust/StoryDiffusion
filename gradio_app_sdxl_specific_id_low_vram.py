@@ -624,6 +624,7 @@ def process_generation(_sd_type,_model_type,_upload_images, _num_steps,style_nam
             raise NotImplementedError("You should choice between original and Photomaker!",f"But you choice {_model_type}")
         total_results = [real_images[-1]] + total_results
         # yield total_results
+    captions = []
     if _comic_type != "No typesetting (default)":
         captions= prompt_array.splitlines()
         captions = [caption.replace("[NC]","") for caption in captions]
@@ -632,7 +633,7 @@ def process_generation(_sd_type,_model_type,_upload_images, _num_steps,style_nam
         
         font_path = os.path.join("fonts", font_choice)
         print(f"Attempting to load font from path: {font_path}")
-        font = ImageFont.truetype(font_path, int(45))
+        font = ImageFont.truetype(font_path, int(32))
     total_results = get_comic(id_images + real_images, _comic_type, captions=captions, font=font) + total_results
     yield total_results
 
@@ -821,4 +822,4 @@ with gr.Blocks(css=css) as demo:
     gr.Markdown(article)
 
 if __name__ == '__main__':
-    demo.launch(server_name="0.0.0.0", share = False)
+    demo.launch(server_name="0.0.0.0", share = True)
