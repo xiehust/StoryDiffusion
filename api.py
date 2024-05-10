@@ -86,13 +86,13 @@ def ping():
 
 @app.post("/invocations")
 async def create_item(request: APIRequest):
-    json_post = request.json()
-    json_post_raw = json.dumps(json_post)
+    # json_post = request.json()
+    # json_post_raw = json.dumps(json_post)
 
     now = datetime.datetime.now()
     time = now.strftime("%Y-%m-%d %H:%M:%S")
 
-    log = f"[ {time} ] - [Request]:{json_post_raw}"
+    log = f"[ {time} ] - [Request]:{request.prompt_array}"
     print(log)
     
     images = None
