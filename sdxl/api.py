@@ -89,7 +89,7 @@ async def create_item(request: APIRequest):
                   negative_prompt=negative_prompt,
                   width=width,
                   height=height,
-                  target_size=(height,width)
+                  target_size=(height,width),
                   original_size=(1024,1024)).images
     
     data = [image_to_base64(img) for img in images]
