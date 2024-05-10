@@ -81,8 +81,10 @@ async def create_item(request: APIRequest):
     print(request.prompt)
     prompt=request.prompt
     images = pipe(prompt=prompt).images
+    
+    data = [image_to_base64(img) for img in images]
 
-    return APIResponse(images_base64=images)
+    return APIResponse(images_base64=data)
 
 
 if __name__ == '__main__':
