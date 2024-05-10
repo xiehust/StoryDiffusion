@@ -65,6 +65,7 @@ class APIRequest(BaseModel):
     prompt: str
     G_height: int = Field(default=1024)
     G_width: int = Field(default=1024)
+    style_preset: str
     
 class APIResponse(BaseModel):
     images_base64 : List[str] = Field(..., descrition="Generated images")
@@ -81,7 +82,7 @@ async def create_item(request: APIRequest):
     if pipe is None:
         load_model()
     print(request.prompt)
-    prompt=request.prompt
+    prompt=request.prompt + ' ' + request.style_preset 
     negative_prompt = request.negative_prompt
     width = request.G_width
     height = request.G_height
