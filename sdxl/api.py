@@ -63,6 +63,8 @@ class APIRequest(BaseModel):
     cfg_scale: float = Field(default=7)
     negative_prompt : str =  Field(default="naked, deformed, bad anatomy, disfigured, poorly drawn face, mutation, extra limb, ugly, disgusting, poorly drawn hands, missing limb, floating limbs, disconnected limbs, blurry, watermarks, oversaturated, distorted hands, amputation")
     prompt: str
+    G_height: int = Field(default=1024)
+    G_width: int = Field(default=1024)
     
 class APIResponse(BaseModel):
     images_base64 : List[str] = Field(..., descrition="Generated images")
@@ -80,7 +82,15 @@ async def create_item(request: APIRequest):
         load_model()
     print(request.prompt)
     prompt=request.prompt
-    images = pipe(prompt=prompt).images
+    negative_prompt = request.negative_prompt
+    width = request.G_width
+    height = request.G_height
+    images = pipe(prompt=prompt,
+                  negative_prompt=negative_prompt,
+                  width=width,
+                  height=height,
+                  target_size=(height,width)
+                  original_size=(1024,1024)).images
     
     data = [image_to_base64(img) for img in images]
 
