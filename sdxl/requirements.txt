@@ -1,0 +1,5 @@
+invisible_watermark
+accelerate
+safetensors
+transformers
+diffusers
