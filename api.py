@@ -100,7 +100,7 @@ async def create_item(request: APIRequest):
         images = [ base64_to_image(file) for file in request.files]
         request.modeltype = "Using Ref Images"
     
-    generators = process_generation(request.sd_type,request.modeltype,images,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice,None)
+    generators = process_generation(request.sd_type,request.modeltype,images,request.num_steps,request.style,request.Ip_Adapter_Strength,request.style_strength_ratio,request.guidance_scale,request.seed_,request.sa32_,request.sa64_,request.id_length_,request.general_prompt,request.negative_prompt,request.prompt_array,request.G_height,request.G_width,request.comic_type,request.font_choice,"")
     images = []
     for results in generators:
         for result in results:
