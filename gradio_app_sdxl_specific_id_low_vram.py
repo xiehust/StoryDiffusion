@@ -885,7 +885,7 @@ def process_generation(
                 print(ref_indexs[ind])
                 results_dict[ref_indexs[ind]] = img
             # real_images = []
-            yield [results_dict[ind] for ind in results_dict.keys()]
+            # yield [results_dict[ind] for ind in results_dict.keys()]
     write = False
     if not load_chars:
         real_prompts_inds = [
@@ -939,7 +939,7 @@ def process_generation(
                 "You should choice between original and Photomaker!",
                 f"But you choice {_model_type}",
             )
-        yield [results_dict[ind] for ind in results_dict.keys()]
+        # yield [results_dict[ind] for ind in results_dict.keys()]
     total_results = [results_dict[ind] for ind in range(len(prompts))]
     if _comic_type != "No typesetting (default)":
         captions = prompt_array.splitlines()
