@@ -751,6 +751,7 @@ def process_generation(
             attn_processor.id_length = id_length
             attn_processor.total_length = id_length + 1
     gc.collect()
+    torch.cuda.empty_cache()
     if cur_model_type != _sd_type + "-" + _model_type:
         # apply the style template
         ##### load pipe
@@ -1088,7 +1089,7 @@ with gr.Blocks(css=css) as demo:
                         minimum=20,
                         maximum=100,
                         step=1,
-                        value=20,
+                        value=35,
                     )
                     G_height = gr.Slider(
                         label="height",
