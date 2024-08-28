@@ -7,18 +7,8 @@ set -e
 
 # The argument to this script is the region name. 
 
-if [ "$#" -lt 1 ]||[ "$#" -gt 2 ]; then
-    echo "usage: $0 [region-name] [profile-name (optional)]"
-    exit 1
-fi
-
-region=$1
-
-if [ "$#" -eq 2 ]; then
-    profile=$2
-else
-    profile="default"
-fi
+region=$(aws configure get region)
+profile="default"
 
 
 # Get the account number associated with the current IAM credentials
